@@ -1,5 +1,5 @@
 /**
- * TypeScript declarations for @onepage/pdf-report
+ * TypeScript declarations for @rubixscript/react-native-pdf-report
  */
 
 export declare const PDFReportModal: any;
