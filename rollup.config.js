@@ -9,36 +9,58 @@ export default [
     output: {
       file: 'dist/index.js',
       format: 'cjs',
+      sourcemap: true,
       exports: 'named',
     },
     plugins: [
       peerDepsExternal(),
-      resolve(),
+      resolve({
+        browser: true,
+        preferBuiltins: false,
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      }),
       commonjs(),
       typescript({
-        tsconfig: false,
         declaration: true,
         declarationDir: 'dist',
         rootDir: 'src',
+        exclude: ['**/*.test.ts', '**/*.test.tsx'],
       }),
     ],
-    external: ['react', 'react-native'],
+    external: [
+      'react',
+      'react-native',
+      'expo-linear-gradient',
+      '@expo/vector-icons',
+      '@react-native-community/datetimepicker',
+    ],
   },
   {
     input: 'src/index.ts',
     output: {
       file: 'dist/index.esm.js',
       format: 'esm',
+      sourcemap: true,
     },
     plugins: [
       peerDepsExternal(),
-      resolve(),
+      resolve({
+        browser: true,
+        preferBuiltins: false,
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      }),
       commonjs(),
       typescript({
-        tsconfig: false,
         declaration: false, // Only generate in first build
+        exclude: ['**/*.test.ts', '**/*.test.tsx'],
       }),
     ],
-    external: ['react', 'react-native'],
+    external: [
+      'react',
+      'react-native',
+      'expo-linear-gradient',
+      '@expo/vector-icons',
+      '@react-native-community/datetimepicker',
+    ],
   },
 ];

@@ -2,8 +2,10 @@
   "name": "@rubixscript/react-native-pdf-report",
   "version": "1.0.0",
   "description": "A comprehensive React Native PDF report generation library for creating customizable reading reports",
-  "main": "src/index.ts",
-  "types": "src/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://www.rubixscript.com",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
@@ -25,6 +27,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/rubixscript/react-native-pdf-report.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rubixscript/react-native-pdf-report/issues"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

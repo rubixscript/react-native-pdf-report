@@ -1,8 +1,14 @@
 /**
- * TypeScript declarations for @rubixscript/react-native-pdf-report
+ * React Native PDF Report Library
+ *
+ * Type definitions for the PDF report library.
+ *
+ * @author RubixScript Team
+ * @version 1.0.0
  */
 
-export declare const PDFReportModal: any;
+// Export main component types
+export { default as PDFReportModal } from './src/components/Modals/PDFReportModal';
 
 export interface Book {
   id: string;
