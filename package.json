@@ -1,5 +1,5 @@
 {
-  "name": "@rubixreactnative/react-native-pdf-report",
+  "name": "@rubixscript/react-native-pdf-report",
   "version": "1.0.0",
   "description": "A comprehensive React Native PDF report generation library for creating customizable reading reports",
   "main": "src/index.ts",
@@ -20,11 +20,11 @@
     "react",
     "modal"
   ],
-  "author": "OnePage Team",
+  "author": "RubixScript Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/onepage/pdf-report.git"
+    "url": "https://github.com/rubixscript/react-native-pdf-report.git"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

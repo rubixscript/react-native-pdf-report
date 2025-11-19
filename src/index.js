@@ -1,5 +1,5 @@
 /**
- * Main entry point for @onepage/pdf-report library
+ * Main entry point for @rubixscript/react-native-pdf-report library
  * This provides proper module exports for Metro bundler
  */
 

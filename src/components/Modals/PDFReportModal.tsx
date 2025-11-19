@@ -428,7 +428,7 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
         <View style={modalStyles.modalContainer}>
           {/* Header */}
           <View style={modalStyles.header}>
-            <Text style={modalStyles.title}>📄 Create OnePage Reading Report</Text>
+            <Text style={modalStyles.title}>📄 Create RubixScript Reading Report</Text>
             <TouchableOpacity onPress={onClose}>
               <Ionicons
                 name="close"
