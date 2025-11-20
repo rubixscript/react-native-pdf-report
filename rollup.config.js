@@ -21,9 +21,7 @@ export default [
       }),
       commonjs(),
       typescript({
-        declaration: true,
-        declarationDir: 'dist',
-        rootDir: 'src',
+        tsconfig: './tsconfig.json',
         exclude: ['**/*.test.ts', '**/*.test.tsx'],
       }),
     ],
@@ -51,6 +49,7 @@ export default [
       }),
       commonjs(),
       typescript({
+        tsconfig: './tsconfig.json',
         declaration: false, // Only generate in first build
         exclude: ['**/*.test.ts', '**/*.test.tsx'],
       }),
