@@ -1,14 +1,6 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet, Alert, Share } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert, Share } from 'react-native';
 import { useState } from 'react';
-import * as FileSystem from 'expo-file-system';
 import { PDFReportModal, Book, ReadingSession, ReportOptions } from '@rubixscript/react-native-pdf-report';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
 // Sample data for demonstration
 const sampleBooks: Book[] = [
@@ -83,14 +75,12 @@ const sampleReadingSessions: ReadingSession[] = [
   },
 ];
 
-export default function HomeScreen() {
+export default function App() {
   const [showModal, setShowModal] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   const handleGenerateReport = async (options: ReportOptions) => {
     try {
-      // Here you would typically integrate with a PDF generation service
-      // For now, we'll simulate the process and create a simple report info
       const reportInfo = {
         type: options.type,
         title: options.customTitle || `${options.type} Reading Report`,
@@ -137,70 +127,34 @@ export default function HomeScreen() {
   };
 
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-        headerImage={
-          <Image
-            source={require('@/assets/images/partial-react-logo.png')}
-            style={styles.reactLogo}
-          />
-        }>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Reading Report Demo</ThemedText>
-          <HelloWave />
-        </ThemedView>
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Reading Report Generation</ThemedText>
-          <ThemedText>
-            This demo showcases reading report generation using{' '}
-            <ThemedText type="defaultSemiBold">@rubixscript/react-native-pdf-report</ThemedText> library.
-          </ThemedText>
-          <Link href="#" onPress={() => setShowModal(true)}>
-            <ThemedText type="defaultSemiBold" style={styles.linkText}>
-              📄 Create Reading Report
-            </ThemedText>
-          </Link>
-        </ThemedView>
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Sample Reading Data</ThemedText>
-          <ThemedText>
-            This demo includes sample reading data:
-          </ThemedText>
-          <ThemedText style={styles.featureList}>
-            • {sampleBooks.length} books in library
-          </ThemedText>
-          <ThemedText style={styles.featureList}>
-            • {sampleReadingSessions.length} reading sessions
-          </ThemedText>
-          <ThemedText style={styles.featureList}>
-            • Multiple report types (summary, monthly, yearly, custom, book details)
-          </ThemedText>
-          <ThemedText style={styles.featureList}>
-            • Customizable report content options
-          </ThemedText>
-          <ThemedText style={styles.featureList}>
-            • Date range selection for custom reports
-          </ThemedText>
-        </ThemedView>
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">How to Use</ThemedText>
-          <ThemedText>
-            1. Tap "Create Reading Report" to open the modal
-          </ThemedText>
-          <ThemedText>
-            2. Select your desired report type
-          </ThemedText>
-          <ThemedText>
-            3. Customize the report content options
-          </ThemedText>
-          <ThemedText>
-            4. Generate and share your reading report
-          </ThemedText>
-        </ThemedView>
-      </ParallaxScrollView>
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.title}>RubixScript PDF Report</Text>
+        <Text style={styles.subtitle}>Reading Report Generation Demo</Text>
 
-      {/* PDF Report Modal */}
+        <View style={styles.infoBox}>
+          <Text style={styles.infoText}>Sample Data:</Text>
+          <Text style={styles.infoItem}>• {sampleBooks.length} books</Text>
+          <Text style={styles.infoItem}>• {sampleReadingSessions.length} reading sessions</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowModal(true)}
+        >
+          <Text style={styles.buttonText}>Generate PDF Report</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton]}
+          onPress={() => setDarkMode(!darkMode)}
+        >
+          <Text style={styles.secondaryButtonText}>
+            Toggle Theme ({darkMode ? 'Dark' : 'Light'})
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <PDFReportModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -210,36 +164,83 @@ export default function HomeScreen() {
         userName="Demo User"
         onGenerateReport={handleGenerateReport}
       />
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    padding: 20,
   },
-  stepContainer: {
-    gap: 8,
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 8,
+    textAlign: 'center',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
+    textAlign: 'center',
   },
-  linkText: {
-    color: '#007AFF',
-    textDecorationLine: 'underline',
-    marginTop: 8,
+  infoBox: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 30,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  infoText: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#333',
+    marginBottom: 10,
   },
-  featureList: {
-    marginLeft: 16,
-    marginVertical: 2,
+  infoItem: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 10,
+    marginVertical: 4,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 8,
+    marginVertical: 8,
+    width: '100%',
+    maxWidth: 400,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  secondaryButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  secondaryButtonText: {
+    color: '#007AFF',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
