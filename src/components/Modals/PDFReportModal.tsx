@@ -309,9 +309,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
   },
   content: {
-    flex: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 20,
+    minHeight: 200,
   },
   previewSection: {
     marginTop: 20,
@@ -376,11 +377,12 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   previewContent: {
-    gap: 10,
+    // gap: 10, // Not supported in older RN versions
   },
   previewItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 8,
   },
   previewBullet: {
     width: 6,
