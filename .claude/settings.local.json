@@ -6,7 +6,9 @@
       "Bash(npm run build:*)",
       "Bash(dir:*)",
       "Bash(npm whoami:*)",
-      "Bash(npm publish:*)"
+      "Bash(npm publish:*)",
+      "Bash(tree:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,9 +1,10 @@
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Share } from 'react-native';
-import { useState } from 'react';
-import { PDFReportModal, Book, ReadingSession, ReportOptions } from '@rubixscript/react-native-pdf-report';
+import { StatusBar } from 'expo-status-bar';
+import { PDFReportModal, Book, ReadingSession, ReportOptions } from '../src';
 
 // Sample data for demonstration
-const sampleBooks: Book[] = [
+const sampleBooks = [
   {
     id: '1',
     title: 'The Great Gatsby',
@@ -43,7 +44,7 @@ const sampleBooks: Book[] = [
   },
 ];
 
-const sampleReadingSessions: ReadingSession[] = [
+const sampleReadingSessions = [
   {
     id: '1',
     bookId: '1',
@@ -79,7 +80,7 @@ export default function App() {
   const [showModal, setShowModal] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  const handleGenerateReport = async (options: ReportOptions) => {
+  const handleGenerateReport = async (options) => {
     try {
       const reportInfo = {
         type: options.type,
@@ -164,6 +165,7 @@ export default function App() {
         userName="Demo User"
         onGenerateReport={handleGenerateReport}
       />
+      <StatusBar style="auto" />
     </View>
   );
 }
