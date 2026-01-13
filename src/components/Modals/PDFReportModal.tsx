@@ -33,6 +33,7 @@ import {
   TouchableOpacity,
   Modal,
   Platform,
+  Text,
 } from 'react-native';
 import { DataItem, ActivitySession, PDFReportModalProps } from '../../types';
 import { useReportForm } from '../../hooks/useReportForm';
@@ -219,6 +220,52 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
               darkMode={darkMode}
               primaryColor={primaryColor}
             />
+
+            {/* PDF Preview */}
+            <View style={[styles.previewSection, darkMode && styles.previewSectionDark]}>
+              <Text style={[styles.previewTitle, darkMode && styles.previewTitleDark]}>PDF Preview</Text>
+              <View style={[styles.previewCard, darkMode && styles.previewCardDark]}>
+                <View style={styles.previewHeader}>
+                  <View style={[styles.previewIcon, { backgroundColor: primaryColor }]}>
+                    <Text style={styles.previewIconText}>📄</Text>
+                  </View>
+                  <View style={styles.previewHeaderInfo}>
+                    <Text style={[styles.previewReportTitle, darkMode && styles.previewReportTitleDark]}>
+                      {customTitle || `${selectedReportType} ${labels.reportTitle || 'Report'}`}
+                    </Text>
+                    <Text style={[styles.previewReportSubtitle, darkMode && styles.previewReportSubtitleDark]}>
+                      {data.length} {labels.itemLabelPlural || 'Items'} • {sessions.length} {labels.sessionLabelPlural || 'Sessions'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.previewContent}>
+                  {includeCharts && (
+                    <View style={styles.previewItem}>
+                      <View style={[styles.previewBullet, { backgroundColor: primaryColor }]} />
+                      <Text style={[styles.previewItemText, darkMode && styles.previewItemTextDark]}>Charts & Graphs</Text>
+                    </View>
+                  )}
+                  {includeItemDetails && (
+                    <View style={styles.previewItem}>
+                      <View style={[styles.previewBullet, { backgroundColor: primaryColor }]} />
+                      <Text style={[styles.previewItemText, darkMode && styles.previewItemTextDark]}>{labels.itemLabelPlural || 'Items'} Details</Text>
+                    </View>
+                  )}
+                  {includeSessionDetails && (
+                    <View style={styles.previewItem}>
+                      <View style={[styles.previewBullet, { backgroundColor: primaryColor }]} />
+                      <Text style={[styles.previewItemText, darkMode && styles.previewItemTextDark]}>{labels.sessionLabelPlural || 'Sessions'} Details</Text>
+                    </View>
+                  )}
+                  {includeAchievements && (
+                    <View style={styles.previewItem}>
+                      <View style={[styles.previewBullet, { backgroundColor: primaryColor }]} />
+                      <Text style={[styles.previewItemText, darkMode && styles.previewItemTextDark]}>Achievements & Milestones</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </View>
           </ScrollView>
 
           {/* Footer */}
@@ -265,6 +312,88 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  previewSection: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  previewSectionDark: {
+    backgroundColor: 'transparent',
+  },
+  previewTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  previewTitleDark: {
+    color: '#fff',
+  },
+  previewCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  previewCardDark: {
+    backgroundColor: '#2a2a2a',
+    borderColor: '#3a3a3a',
+  },
+  previewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  previewIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  previewIconText: {
+    fontSize: 24,
+  },
+  previewHeaderInfo: {
+    flex: 1,
+  },
+  previewReportTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  previewReportTitleDark: {
+    color: '#fff',
+  },
+  previewReportSubtitle: {
+    fontSize: 13,
+    color: '#666',
+  },
+  previewReportSubtitleDark: {
+    color: '#999',
+  },
+  previewContent: {
+    gap: 10,
+  },
+  previewItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  previewBullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 10,
+  },
+  previewItemText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  previewItemTextDark: {
+    color: '#aaa',
   },
 });
 

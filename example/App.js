@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Share } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { PDFReportModal, Book, ReadingSession, ReportOptions } from '../src';
+import { PDFReportModal } from '../src';
 
 // Sample data for demonstration
 const sampleBooks = [
@@ -47,7 +47,7 @@ const sampleBooks = [
 const sampleReadingSessions = [
   {
     id: '1',
-    bookId: '1',
+    itemId: '1',
     date: '2024-01-14',
     startPage: 170,
     endPage: 180,
@@ -57,7 +57,7 @@ const sampleReadingSessions = [
   },
   {
     id: '2',
-    bookId: '2',
+    itemId: '2',
     date: '2024-02-05',
     startPage: 140,
     endPage: 156,
@@ -67,7 +67,7 @@ const sampleReadingSessions = [
   },
   {
     id: '3',
-    bookId: '3',
+    itemId: '3',
     date: '2024-02-09',
     startPage: 270,
     endPage: 281,
@@ -160,8 +160,8 @@ export default function App() {
         visible={showModal}
         onClose={() => setShowModal(false)}
         darkMode={darkMode}
-        books={sampleBooks}
-        readingSessions={sampleReadingSessions}
+        data={sampleBooks}
+        sessions={sampleReadingSessions}
         userName="Demo User"
         onGenerateReport={handleGenerateReport}
       />
