@@ -96,6 +96,8 @@ export interface PDFReportModalProps {
   sessions: ActivitySession[]; // generic activity sessions
   userName?: string;
   onGenerateReport: (options: ReportOptions) => void;
+  onShareReport?: (options: ReportOptions) => void;
+  onDownloadReport?: (options: ReportOptions) => void;
   labels?: ReportLabels; // custom labels for the UI
   reportTypes?: ReportTypeConfig[]; // custom report type configurations
   primaryColor?: string; // customizable primary color

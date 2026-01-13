@@ -81,49 +81,31 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   const handleGenerateReport = async (options) => {
+    console.log('Generating report with options:', options);
+    Alert.alert('Success', 'Report generated successfully! You can now share or download it.');
+  };
+
+  const handleShareReport = async (options) => {
     try {
-      const reportInfo = {
-        type: options.type,
-        title: options.customTitle || `${options.type} Reading Report`,
-        includeCharts: options.includeCharts,
-        includeBookDetails: options.includeBookDetails,
-        includeSessionDetails: options.includeSessionDetails,
-        includeAchievements: options.includeAchievements,
-        generatedAt: new Date().toISOString(),
-        booksCount: sampleBooks.length,
-        sessionsCount: sampleReadingSessions.length,
-      };
-
-      // Simulate PDF generation delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      Alert.alert(
-        'Report Generated Successfully!',
-        `Report Type: ${reportInfo.type}\nBooks: ${reportInfo.booksCount}\nReading Sessions: ${reportInfo.sessionsCount}`,
-        [
-          {
-            text: 'OK',
-            onPress: () => console.log('Report info:', reportInfo),
-          },
-          {
-            text: 'Share Report Info',
-            onPress: async () => {
-              try {
-                await Share.share({
-                  title: reportInfo.title,
-                  message: `Reading Report: ${reportInfo.title}\nType: ${reportInfo.type}\nGenerated: ${new Date(reportInfo.generatedAt).toLocaleDateString()}`,
-                });
-              } catch (error) {
-                console.error('Error sharing report info:', error);
-                Alert.alert('Error', 'Failed to share report info');
-              }
-            },
-          },
-        ]
-      );
+      const reportTitle = options.customTitle || `${options.type} Reading Report`;
+      await Share.share({
+        title: reportTitle,
+        message: `Reading Report: ${reportTitle}\nType: ${options.type}\nGenerated: ${new Date().toLocaleDateString()}`,
+      });
     } catch (error) {
-      console.error('Error generating report:', error);
-      Alert.alert('Error', 'Failed to generate reading report');
+      console.error('Error sharing report:', error);
+      Alert.alert('Error', 'Failed to share report');
+    }
+  };
+
+  const handleDownloadReport = async (options) => {
+    try {
+      const reportTitle = options.customTitle || `${options.type} Reading Report`;
+      Alert.alert('Download', `Downloading report: ${reportTitle}\n\nIn a real app, this would download the PDF file.`);
+      console.log('Downloading report with options:', options);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      Alert.alert('Error', 'Failed to download report');
     }
   };
 
@@ -164,6 +146,8 @@ export default function App() {
         sessions={sampleReadingSessions}
         userName="Demo User"
         onGenerateReport={handleGenerateReport}
+        onShareReport={handleShareReport}
+        onDownloadReport={handleDownloadReport}
       />
       <StatusBar style="auto" />
     </View>

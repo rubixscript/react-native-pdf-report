@@ -46,6 +46,7 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
       <TouchableOpacity
         style={[
           styles.button,
+          styles.generateButton,
           { backgroundColor: primaryColor },
           generating && styles.disabledButton,
         ]}
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     padding: 20,
-    gap: 12,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
     backgroundColor: '#ffffff',
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     borderWidth: 1.5,
+    marginRight: 12,
   },
   cancelButtonLight: {
     backgroundColor: '#f0f0f0',
@@ -92,6 +93,9 @@ const styles = StyleSheet.create({
   cancelButtonDark: {
     backgroundColor: '#2a2a2a',
     borderColor: '#3a3a3a',
+  },
+  generateButton: {
+    marginLeft: 12,
   },
   disabledButton: {
     opacity: 0.5,

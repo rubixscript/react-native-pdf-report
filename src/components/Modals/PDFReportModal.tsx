@@ -25,7 +25,7 @@
  * - Beautiful, modern UI with smooth animations
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -55,11 +55,15 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
   sessions,
   userName,
   onGenerateReport,
+  onShareReport,
+  onDownloadReport,
   labels: customLabels,
   reportTypes: customReportTypes,
   primaryColor = DEFAULT_PRIMARY_COLOR,
   accentColor,
 }) => {
+  // State to track if report has been generated
+  const [reportGenerated, setReportGenerated] = useState(false);
   // Merge custom labels with defaults
   const labels = useMemo(
     () => ({
@@ -128,6 +132,73 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
       setCustomEndDate(selectedDate);
     }
   }, [setShowEndDatePicker, setCustomEndDate]);
+
+  // Reset report generated state when modal opens
+  useMemo(() => {
+    if (visible) {
+      setReportGenerated(false);
+    }
+  }, [visible]);
+
+  // Handle share
+  const handleShare = useCallback(() => {
+    const options: ReportOptions = {
+      type: selectedReportType,
+      includeCharts,
+      includeSessionDetails,
+      includeItemDetails,
+      includeAchievements,
+      startDate: customStartDate,
+      endDate: customEndDate,
+      itemId: selectedItemId,
+      customTitle,
+    };
+    onShareReport?.(options);
+  }, [
+    selectedReportType,
+    includeCharts,
+    includeSessionDetails,
+    includeItemDetails,
+    includeAchievements,
+    customStartDate,
+    customEndDate,
+    selectedItemId,
+    customTitle,
+    onShareReport,
+  ]);
+
+  // Handle download
+  const handleDownload = useCallback(() => {
+    const options: ReportOptions = {
+      type: selectedReportType,
+      includeCharts,
+      includeSessionDetails,
+      includeItemDetails,
+      includeAchievements,
+      startDate: customStartDate,
+      endDate: customEndDate,
+      itemId: selectedItemId,
+      customTitle,
+    };
+    onDownloadReport?.(options);
+  }, [
+    selectedReportType,
+    includeCharts,
+    includeSessionDetails,
+    includeItemDetails,
+    includeAchievements,
+    customStartDate,
+    customEndDate,
+    selectedItemId,
+    customTitle,
+    onDownloadReport,
+  ]);
+
+  // Wrap handleGenerateReport to set reportGenerated state
+  const handleGenerate = useCallback(() => {
+    handleGenerateReport();
+    setReportGenerated(true);
+  }, [handleGenerateReport]);
 
   return (
     <Modal
@@ -271,10 +342,13 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
           {/* Footer */}
           <ModalFooter
             onCancel={onClose}
-            onGenerate={handleGenerateReport}
+            onGenerate={handleGenerate}
             generating={generating}
             darkMode={darkMode}
             primaryColor={primaryColor}
+            onShare={handleShare}
+            onDownload={handleDownload}
+            reportGenerated={reportGenerated}
           />
         </View>
       </View>
