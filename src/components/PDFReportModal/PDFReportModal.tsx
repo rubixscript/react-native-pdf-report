@@ -35,17 +35,17 @@ import {
   Platform,
   Text,
 } from 'react-native';
-import { DataItem, ActivitySession, PDFReportModalProps } from '../../types';
-import { useReportForm } from '../../hooks/useReportForm';
-import { useReportTypes } from '../../hooks/useReportTypes';
-import { DEFAULT_LABELS, DEFAULT_PRIMARY_COLOR } from '../../utils/constants';
-import { ReportTypeSelector } from '../ReportTypeSelector/ReportTypeSelector';
-import { DateRangeSelector } from '../DateRangeSelector/DateRangeSelector';
-import { ItemSelector } from '../ItemSelector/ItemSelector';
-import { CustomTitleInput } from '../CustomTitleInput/CustomTitleInput';
-import { ReportOptionsToggles } from '../ReportOptions/ReportOptionsToggles';
-import { ModalHeader } from '../ModalHeader/ModalHeader';
-import { ModalFooter } from '../ModalFooter/ModalFooter';
+import { DataItem, ActivitySession, PDFReportModalProps, ReportOptions } from '../../types';
+import { useReportForm, useReportTypes } from '../../hooks';
+import { DEFAULT_LABELS, DEFAULT_PRIMARY_COLOR } from '../../utils';
+import { ReportTypeSelector } from '../ReportTypeSelector';
+import { DateRangeSelector } from '../DateRangeSelector';
+import { ItemSelector } from '../ItemSelector';
+import { CustomTitleInput } from '../CustomTitleInput';
+import { ReportOptionsToggles } from '../ReportOptions';
+import { ModalHeader } from '../ModalHeader';
+import { ModalFooter } from '../ModalFooter';
+import { SuccessModal } from '../SuccessModal';
 
 const PDFReportModal: React.FC<PDFReportModalProps> = ({
   visible,
@@ -62,8 +62,8 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
   primaryColor = DEFAULT_PRIMARY_COLOR,
   accentColor,
 }) => {
-  // State to track if report has been generated
-  const [reportGenerated, setReportGenerated] = useState(false);
+  // State for success modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   // Merge custom labels with defaults
   const labels = useMemo(
     () => ({
@@ -133,14 +133,14 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
     }
   }, [setShowEndDatePicker, setCustomEndDate]);
 
-  // Reset report generated state when modal opens
+  // Reset success modal state when main modal opens
   useMemo(() => {
     if (visible) {
-      setReportGenerated(false);
+      setShowSuccessModal(false);
     }
   }, [visible]);
 
-  // Handle share
+  // Handle share from success modal
   const handleShare = useCallback(() => {
     const options: ReportOptions = {
       type: selectedReportType,
@@ -154,6 +154,7 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
       customTitle,
     };
     onShareReport?.(options);
+    setShowSuccessModal(false);
   }, [
     selectedReportType,
     includeCharts,
@@ -167,7 +168,7 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
     onShareReport,
   ]);
 
-  // Handle download
+  // Handle download from success modal
   const handleDownload = useCallback(() => {
     const options: ReportOptions = {
       type: selectedReportType,
@@ -181,6 +182,7 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
       customTitle,
     };
     onDownloadReport?.(options);
+    setShowSuccessModal(false);
   }, [
     selectedReportType,
     includeCharts,
@@ -194,32 +196,39 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
     onDownloadReport,
   ]);
 
-  // Wrap handleGenerateReport to set reportGenerated state
-  const handleGenerate = useCallback(() => {
-    handleGenerateReport();
-    setReportGenerated(true);
+  // Handle generate - show success modal after report is generated
+  const handleGenerate = useCallback(async () => {
+    await handleGenerateReport();
+    // Small delay to show success modal after main modal closes
+    setTimeout(() => {
+      setShowSuccessModal(true);
+    }, 300);
   }, [handleGenerateReport]);
 
-  return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={onClose}
-    >
-      <View style={styles.modalOverlay}>
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          activeOpacity={1}
-          onPress={onClose}
-        />
+  // Get report title for success modal
+  const reportTitle = customTitle || `${selectedReportType} ${labels.reportTitle || 'Report'}`;
 
-        <View
-          style={[
-            styles.modalContainer,
-            darkMode && styles.modalContainerDark,
-          ]}
-        >
+  return (
+    <>
+      <Modal
+        visible={visible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={onClose}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            activeOpacity={1}
+            onPress={onClose}
+          />
+
+          <View
+            style={[
+              styles.modalContainer,
+              darkMode && styles.modalContainerDark,
+            ]}
+          >
           {/* Header */}
           <ModalHeader
             title={labels.reportTitle || 'Activity Report'}
@@ -346,13 +355,22 @@ const PDFReportModal: React.FC<PDFReportModalProps> = ({
             generating={generating}
             darkMode={darkMode}
             primaryColor={primaryColor}
-            onShare={handleShare}
-            onDownload={handleDownload}
-            reportGenerated={reportGenerated}
           />
         </View>
       </View>
     </Modal>
+
+    {/* Success Modal */}
+    <SuccessModal
+      visible={showSuccessModal}
+      onClose={() => setShowSuccessModal(false)}
+      onShare={handleShare}
+      onDownload={handleDownload}
+      darkMode={darkMode}
+      primaryColor={primaryColor}
+      reportTitle={reportTitle}
+    />
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Alert, Share } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { PDFReportModal } from '../src';
+import { PDFReportModal, downloadPDFReport, sharePDFReport } from '../src';
 
 // Sample data for demonstration
 const sampleBooks = [
@@ -87,31 +87,47 @@ export default function App() {
 
   const handleShareReport = async (options) => {
     try {
-      const reportTitle = options.customTitle || `${options.type} Reading Report`;
-      await Share.share({
-        title: reportTitle,
-        message: `Reading Report: ${reportTitle}\nType: ${options.type}\nGenerated: ${new Date().toLocaleDateString()}`,
-      });
+      await sharePDFReport(
+        options,
+        sampleBooks,
+        sampleReadingSessions,
+        'Book',
+        'Books',
+        'Reading Sessions'
+      );
     } catch (error) {
       console.error('Error sharing report:', error);
-      Alert.alert('Error', 'Failed to share report');
+      Alert.alert('Error', 'Failed to share report: ' + error.message);
     }
   };
 
   const handleDownloadReport = async (options) => {
     try {
-      const reportTitle = options.customTitle || `${options.type} Reading Report`;
-      Alert.alert('Download', `Downloading report: ${reportTitle}\n\nIn a real app, this would download the PDF file.`);
-      console.log('Downloading report with options:', options);
+      const fileUri = await downloadPDFReport(
+        options,
+        sampleBooks,
+        sampleReadingSessions,
+        'Book',
+        'Books',
+        'Reading Sessions'
+      );
+
+      Alert.alert(
+        'Download Complete!',
+        `PDF saved to:\n${fileUri}\n\nYou can find it in your device's file manager.`,
+        [{ text: 'OK', onPress: () => console.log('File saved to:', fileUri) }]
+      );
+
+      console.log('PDF saved to:', fileUri);
     } catch (error) {
       console.error('Error downloading report:', error);
-      Alert.alert('Error', 'Failed to download report');
+      Alert.alert('Error', 'Failed to download report: ' + error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>RubixScript PDF Report</Text>
         <Text style={styles.subtitle}>Reading Report Generation Demo</Text>
 
@@ -119,6 +135,8 @@ export default function App() {
           <Text style={styles.infoText}>Sample Data:</Text>
           <Text style={styles.infoItem}>• {sampleBooks.length} books</Text>
           <Text style={styles.infoItem}>• {sampleReadingSessions.length} reading sessions</Text>
+          <Text style={styles.infoItem}>• {sampleBooks.filter(b => b.currentPage === b.totalPages).length} completed books</Text>
+          <Text style={styles.infoItem}>• {sampleBooks.reduce((sum, b) => sum + b.currentPage, 0)} total pages read</Text>
         </View>
 
         <TouchableOpacity
@@ -136,7 +154,7 @@ export default function App() {
             Toggle Theme ({darkMode ? 'Dark' : 'Light'})
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       <PDFReportModal
         visible={showModal}
@@ -160,7 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,

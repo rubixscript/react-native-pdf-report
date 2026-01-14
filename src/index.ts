@@ -4,7 +4,7 @@
  * Supports any tracking app: reading, pomodoro, expenses, skills, habits, and more
  *
  * @architecture Modular
- * - 8 reusable components
+ * - 9 reusable components
  * - 2 custom hooks
  * - Utility functions (formatters, validators, constants)
  * - Full TypeScript support
@@ -13,7 +13,7 @@
 // ============================================================================
 // Main Component Export
 // ============================================================================
-export { default as PDFReportModal } from './components/Modals/PDFReportModal';
+export { default as PDFReportModal } from './components/PDFReportModal';
 
 // ============================================================================
 // Modular Components Export
@@ -26,6 +26,7 @@ export {
   ReportOptionsToggles,
   ModalHeader,
   ModalFooter,
+  SuccessModal,
 } from './components';
 
 // ============================================================================
@@ -49,6 +50,10 @@ export {
   // Validators
   validateDateRange,
   validateItemSelection,
+  // PDF Generator
+  generatePDFHTML,
+  downloadPDFReport,
+  sharePDFReport,
 } from './utils';
 
 // ============================================================================
