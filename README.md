@@ -250,6 +250,282 @@ const readingLabels: ReportLabels = {
 // They are aliases for DataItem and ActivitySession
 ```
 
+## 🎯 Integration with Companion Libraries
+
+This PDF Report library is designed to work seamlessly with other RubixScript productivity libraries:
+
+### With Flip Clock Library
+
+Combine PDF Report with the Flip Clock for a complete Pomodoro/productivity timer solution:
+
+```tsx
+import React, { useState } from 'react';
+import { View, Button } from 'react-native';
+import { FlipClockModal } from '@rubixscript/react-native-flip-clock';
+import { PDFReportModal } from '@rubixscript/react-native-pdf-report';
+
+const ProductivityApp = () => {
+  const [showFlipClock, setShowFlipClock] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+
+  // Your Pomodoro tasks data
+  const tasks = [
+    {
+      id: '1',
+      title: 'Complete Project',
+      subtitle: 'Work',
+      progress: 60, // pomodoros completed
+      total: 10,    // total estimated pomodoros
+      current: 6,   // completed pomodoros
+      category: 'Work',
+      color: '#FF6347',
+    },
+  ];
+
+  // Pomodoro sessions from Flip Clock
+  const pomodoroSessions = [
+    {
+      id: 's1',
+      itemId: '1',
+      date: new Date(),
+      duration: 25, // minutes from Flip Clock
+      value: 1,    // 1 pomodoro completed
+      notes: 'Focused work session',
+    },
+  ];
+
+  const pomodoroLabels: ReportLabels = {
+    itemLabel: 'Task',
+    itemLabelPlural: 'Tasks',
+    sessionLabel: 'Pomodoro Session',
+    sessionLabelPlural: 'Pomodoro Sessions',
+    reportTitle: 'Pomodoro Report',
+    progressLabel: 'Pomodoros Completed',
+    durationLabel: 'Focus Time',
+  };
+
+  return (
+    <View>
+      <Button
+        title="Start Pomodoro Timer"
+        onPress={() => setShowFlipClock(true)}
+      />
+      <Button
+        title="Generate Report"
+        onPress={() => setShowReport(true)}
+      />
+
+      {/* Flip Clock for timing */}
+      <FlipClockModal
+        visible={showFlipClock}
+        onClose={() => setShowFlipClock(false)}
+        phase="work"
+        theme="dark"
+        // ... timer props
+      />
+
+      {/* PDF Report for analytics */}
+      <PDFReportModal
+        visible={showReport}
+        onClose={() => setShowReport(false)}
+        darkMode={false}
+        data={tasks}
+        sessions={pomodoroSessions}
+        labels={pomodoroLabels}
+        primaryColor="#FF6347"
+        onGenerateReport={(options) => {
+          console.log('Generate Pomodoro PDF:', options);
+        }}
+      />
+    </View>
+  );
+};
+```
+
+### With Productivity Charts Library
+
+Combine PDF Report with Productivity Charts for visual analytics before generating reports:
+
+```tsx
+import React, { useState } from 'react';
+import { View, ScrollView, Button } from 'react-native';
+import {
+  HeatmapChart,
+  ActivityBarChart,
+  ProgressCard,
+  generateHeatmapData,
+  useProductivityData,
+} from '@rubixscript/react-native-productivity-charts';
+import { PDFReportModal } from '@rubixscript/react-native-pdf-report';
+
+const DashboardWithReport = () => {
+  const [showReport, setShowReport] = useState(false);
+
+  // Your tracking data
+  const sessions = [
+    { date: new Date('2025-01-01'), value: 5 },
+    { date: new Date('2025-01-02'), value: 8 },
+    // ... more sessions
+  ];
+
+  // Generate data for Productivity Charts
+  const heatmapDays = generateHeatmapData(sessions, 150, 8);
+  const { stats, dailyData } = useProductivityData({ days: heatmapDays });
+
+  // Map sessions to PDF Report format
+  const reportSessions = sessions.map((session, index) => ({
+    id: `s${index}`,
+    itemId: '1',
+    date: session.date,
+    value: session.value,
+    duration: session.value * 25, // Assuming 25 min per session
+  }));
+
+  const reportData = [
+    {
+      id: '1',
+      title: 'All Activities',
+      progress: stats.currentStreak * 10,
+      total: 100,
+      current: stats.totalSessions,
+    },
+  ];
+
+  return (
+    <ScrollView>
+      {/* Visual Analytics with Productivity Charts */}
+      <ProgressCard
+        icon="fire"
+        value={stats.currentStreak}
+        label="Day Streak"
+      />
+
+      <HeatmapChart days={heatmapDays} />
+
+      <ActivityBarChart data={dailyData.slice(0, 7)} />
+
+      <Button
+        title="Generate PDF Report"
+        onPress={() => setShowReport(true)}
+      />
+
+      {/* PDF Report Generation */}
+      <PDFReportModal
+        visible={showReport}
+        onClose={() => setShowReport(false)}
+        darkMode={false}
+        data={reportData}
+        sessions={reportSessions}
+        onGenerateReport={(options) => {
+          console.log('Generate PDF with stats:', options);
+        }}
+      />
+    </ScrollView>
+  );
+};
+```
+
+### Complete Integration Example
+
+A complete productivity app combining all three libraries:
+
+```tsx
+import React, { useState } from 'react';
+import { View, ScrollView, Button } from 'react-native';
+import { FlipClockModal } from '@rubixscript/react-native-flip-clock';
+import {
+  HeatmapChart,
+  ProgressCard,
+  generateHeatmapData,
+  useProductivityData,
+} from '@rubixscript/react-native-productivity-charts';
+import { PDFReportModal } from '@rubixscript/react-native-pdf-report';
+
+const CompleteProductivityApp = () => {
+  const [showTimer, setShowTimer] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+
+  // Session data from your app
+  const sessions = [
+    { date: new Date(), value: 4, duration: 100 },
+    // ... more sessions
+  ];
+
+  const heatmapDays = generateHeatmapData(sessions, 90, 5);
+  const { stats } = useProductivityData({ days: heatmapDays });
+
+  return (
+    <ScrollView style={{ flex: 1, padding: 16 }}>
+      {/* Visual Stats */}
+      <ProgressCard
+        icon="clock-outline"
+        value={stats.totalTime}
+        label="Focus Minutes"
+      />
+
+      <HeatmapChart days={heatmapDays} title="Activity Heatmap" />
+
+      {/* Timer Button */}
+      <Button
+        title="Start Focus Session"
+        onPress={() => setShowTimer(true)}
+      />
+
+      {/* Report Button */}
+      <Button
+        title="Generate PDF Report"
+        onPress={() => setShowReport(true)}
+      />
+
+      {/* Flip Clock Modal */}
+      <FlipClockModal
+        visible={showTimer}
+        onClose={() => setShowTimer(false)}
+        phase="work"
+        theme="dark"
+        time={1500}
+        isRunning={false}
+        onStart={() => console.log('Timer started')}
+        onPause={() => console.log('Timer paused')}
+      />
+
+      {/* PDF Report Modal */}
+      <PDFReportModal
+        visible={showReport}
+        onClose={() => setShowReport(false)}
+        darkMode={false}
+        data={[{
+          id: '1',
+          title: 'Focus Sessions',
+          progress: stats.totalSessions,
+          total: 100,
+          current: stats.totalSessions,
+        }]}
+        sessions={sessions.map((s, i) => ({
+          id: `s${i}`,
+          itemId: '1',
+          date: s.date,
+          value: s.value,
+          duration: s.duration,
+        }))}
+        labels={{
+          itemLabel: 'Goal',
+          itemLabelPlural: 'Goals',
+          sessionLabel: 'Focus Session',
+          sessionLabelPlural: 'Focus Sessions',
+          reportTitle: 'Productivity Report',
+        }}
+        primaryColor="#8B5CF6"
+        onGenerateReport={(options) => {
+          // Generate PDF with charts and statistics
+          console.log('Report options:', options);
+        }}
+      />
+    </ScrollView>
+  );
+};
+```
+
 ## API Reference
 
 ### PDFReportModal Props
